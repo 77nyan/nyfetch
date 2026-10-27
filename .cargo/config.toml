@@ -1,0 +1,4 @@
+[target.x86_64-unknown-linux-gnu]
+# A static executable skips the dynamic loader and libc.so relocations entirely,
+# which is a large part of the startup time and resident memory of a tiny tool.
+rustflags = ["-C", "target-feature=+crt-static"]

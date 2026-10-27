@@ -1,0 +1,21 @@
+[package]
+name = "nyfetch"
+version = "0.1.0"
+edition = "2024"
+description = "A fast system information tool written in Rust with a Lua config"
+license = "MIT"
+repository = "https://github.com/77nyan/nyfetch"
+authors = ["Jakub Ziaja"]
+readme = "README.md"
+
+[dependencies]
+libc = "0.2.191"
+memchr = "2.8.3"
+mlua = { version = "0.12.2", features = ["lua54", "vendored"] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true

@@ -16,27 +16,48 @@ A fast, lightweight system information tool for Linux, written in Rust. It looks
 **CachyOS / Arch**
 
 ```sh
-sudo pacman -S --needed git rust gcc
+sudo pacman -S --needed git
 git clone https://github.com/77nyan/nyfetch.git
 cd nyfetch
-./install.sh
+sudo ./install.sh
 ```
 
-The installer builds NyFetch, copies it to `~/.local/bin`, adds that folder to your `PATH`, and creates your config at `~/.config/nyfetch/config.lua`. Open a new terminal and run `nyfetch`.
+`sudo ./install.sh` is the only way to start the installer (`sh install.sh` will refuse). It opens a small menu; move with the arrow keys (or press `1`-`4`) and press Enter:
 
-**Other Linux distributions**: install Rust ([rustup.rs](https://rustup.rs)) and a C compiler (`gcc` or `clang`), then run the same steps.
+```
+┌  NyFetch installer
+│
+●  NyFetch is not installed yet.
+│  This folder has version 0.1.0.
+│
+◆  What would you like to do?
+│  ● Install  (build NyFetch and install it for everyone)
+│  ○ Update
+│  ○ Uninstall
+│  ○ Quit
+└
+```
+
+| Option | What it does |
+|--------|--------------|
+| **Install** | Installs `rust` and `gcc` with pacman if they are missing, builds NyFetch, installs it to `/usr/local/bin/nyfetch` and creates your config at `~/.config/nyfetch/config.lua`. |
+| **Update** | Downloads the newest version from GitHub (`git pull`), rebuilds and reinstalls. Your config is kept. |
+| **Uninstall** | Removes NyFetch. It asks before touching your config. |
+| **Quit** | Closes the installer. |
+
+Afterwards just run `nyfetch` in any terminal. If the installer says "permission denied", run `chmod +x install.sh` once.
+
+**Other Linux distributions**: install Rust ([rustup.rs](https://rustup.rs)) and a C compiler (`gcc` or `clang`) yourself, then run the same steps.
 
 **Dependencies**
 
 | What | Why |
 |------|-----|
-| `rust` (cargo) | builds NyFetch |
-| `gcc` | compiles the bundled Lua interpreter |
-| `git` | only to download the source |
+| `rust` (cargo) | builds NyFetch (the installer installs it on Arch) |
+| `gcc` | compiles the bundled Lua interpreter (the installer installs it on Arch) |
+| `git` | downloads the source and updates |
 
 Nothing is needed to *run* it: the binary is fully static.
-
-`./install.sh --system` installs for all users (`/usr/local/bin`), `./install.sh --uninstall` removes it (your config is kept).
 To build by hand: `cargo build --release`, then run `target/release/nyfetch`.
 
 ## Usage

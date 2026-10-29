@@ -362,11 +362,31 @@ pub fn load(path: Option<&str>) -> Result<Config, String> {
         let _ = pkg.set("path", format!("{d}/?.lua;{d}/?/init.lua;{old}", d = dir));
     }
 
-    let root: Table = lua
+    let default_table = || -> Result<Table, String> {
+        lua.load(DEFAULT_CONFIG).set_name("=<built-in default config>").eval::<Table>().map_err(|e| e.to_string())
+    };
+    let evaluated: Value = lua
         .load(&src)
         .set_name(format!("={}", name))
         .eval()
         .map_err(|e| format!("config error in {}:\n{}\n\n{}", name, e, HINT))?;
+    let root: Table = match evaluated {
+        Value::Table(t) => t,
+        // An empty config file (or one with only comments) simply means "use the defaults".
+        Value::Nil => default_table()?,
+        _ => {
+            return Err(format!(
+                "config error in {}:\nthe file must end with `return {{ ... }}` (a table).\n\n{}",
+                name, HINT
+            ));
+        }
+    };
+    // A config without a `modules` list shows the default lines.
+    if matches!(root.get::<Value>("modules"), Ok(Value::Nil)) {
+        if let Ok(m) = default_table().and_then(|d| d.get::<Value>("modules").map_err(|e| e.to_string())) {
+            let _ = root.set("modules", m);
+        }
+    }
 
     let build = || -> mlua::Result<Config> {
         let display = opt_table(&lua, &root, "display")?;

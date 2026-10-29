@@ -1,19 +1,24 @@
+<div align="center">
+
 # NyFetch
 
-A fast, lightweight system information tool for Linux, written in Rust. It looks like [Fastfetch](https://github.com/fastfetch-cli/fastfetch) (same layout, same logos), but you configure it with a simple **Lua** file that anyone can edit, even without coding experience.
+**A fast system info tool for Linux, written in Rust and configured in Lua.**<br>
+Fastfetch's look and logos, with a config file anyone can edit.
 
-<!-- Add a screenshot here: ![NyFetch](screenshot.png) -->
+[![Release](https://img.shields.io/github/v/release/77nyan/nyfetch?style=flat-square&color=a371f7)](https://github.com/77nyan/nyfetch/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-3fb950?style=flat-square)](LICENSE)
+![Made with Rust](https://img.shields.io/badge/made%20with-Rust-dea584?style=flat-square&logo=rust&logoColor=white)
+![Platform: Linux](https://img.shields.io/badge/platform-Linux-58a6ff?style=flat-square&logo=linux&logoColor=white)
 
-## Features
+⚡ **~3 ms** per run &nbsp;·&nbsp; 🪶 **~3 MB** of RAM &nbsp;·&nbsp; 🎨 **540+** logos &nbsp;·&nbsp; 🧩 **Lua** config
 
-- **Fast and small**: one static binary, about 3 ms per run and about 3 MB of memory in my tests. Package counts are cached.
-- **All of Fastfetch's logos** (540+), with small versions for many distros (`--small`).
-- **Beginner-friendly Lua config**: hide, move or rename lines, change colors, add your own text. A tutorial is at the bottom of the config file.
-- **Powerful when you want it**: the config is real Lua, so lines can be functions, run commands, draw bars and gradients, or build the whole layout.
+**[1.0 Install](#10-install)** &nbsp;·&nbsp; **[2.0 Usage](#20-usage)** &nbsp;·&nbsp; **[3.0 Configure](#30-configure)** &nbsp;·&nbsp; **[4.0 Roadmap](#40-roadmap)** &nbsp;·&nbsp; **[5.0 Credits](#50-credits)**
 
-## Install
+</div>
 
-**CachyOS / Arch**
+<br>
+
+## 1.0 Install
 
 ```sh
 sudo pacman -S --needed git
@@ -22,60 +27,56 @@ cd nyfetch
 sudo ./install.sh
 ```
 
-`sudo ./install.sh` is the only way to start the installer (`sh install.sh` will refuse). It opens a small menu; move with the arrow keys (or press `1`-`4`) and press Enter:
+> [!IMPORTANT]
+> Start the installer with `sudo ./install.sh` only. Running it with `sh install.sh` is refused on purpose.
 
-```
-┌  NyFetch installer
-│
-●  NyFetch is not installed yet.
-│  This folder has version 0.1.0.
-│
-◆  What would you like to do?
-│  ● Install  (build NyFetch and install it for everyone)
-│  ○ Update
-│  ○ Uninstall
-│  ○ Quit
-└
-```
+Pick an option with <kbd>↑</kbd> <kbd>↓</kbd> (or <kbd>1</kbd>–<kbd>4</kbd>) and <kbd>Enter</kbd>:
 
-| Option | What it does |
-|--------|--------------|
-| **Install** | Installs `rust` and `gcc` with pacman if they are missing, builds NyFetch, installs it to `/usr/local/bin/nyfetch` and creates your config at `~/.config/nyfetch/config.lua`. |
-| **Update** | Downloads the newest version from GitHub (`git pull`), rebuilds and reinstalls. Your config is kept. |
-| **Uninstall** | Removes NyFetch. It asks before touching your config. |
-| **Quit** | Closes the installer. |
+| | Option | What it does |
+|:-:|--------|--------------|
+| 1 | **Install** | Builds NyFetch, installs it to `/usr/local/bin` and creates your config. |
+| 2 | **Update** | Pulls the newest version from GitHub, rebuilds, keeps your config. |
+| 3 | **Uninstall** | Removes NyFetch. Asks before touching your config. |
+| 4 | **Quit** | Closes the installer. |
 
-Afterwards just run `nyfetch` in any terminal. If the installer says "permission denied", run `chmod +x install.sh` once.
+Then run `nyfetch` in any terminal.
 
-**Other Linux distributions**: install Rust ([rustup.rs](https://rustup.rs)) and a C compiler (`gcc` or `clang`) yourself, then run the same steps.
+<details>
+<summary><b>Dependencies and other distributions</b></summary>
 
-**Dependencies**
+<br>
 
-| What | Why |
-|------|-----|
-| `rust` (cargo) | builds NyFetch (the installer installs it on Arch) |
+| Package | Used for |
+|---------|----------|
+| `rust` | builds NyFetch (the installer installs it on Arch) |
 | `gcc` | compiles the bundled Lua interpreter (the installer installs it on Arch) |
-| `git` | downloads the source and updates |
+| `git` | downloads the source and updates it |
 
-Nothing is needed to *run* it: the binary is fully static.
-To build by hand: `cargo build --release`, then run `target/release/nyfetch`.
+Nothing is needed to *run* NyFetch, the binary is fully static. On other distributions install Rust ([rustup.rs](https://rustup.rs)) and `gcc` or `clang` yourself, then use the same four commands. To build by hand: `cargo build --release`.
 
-## Usage
+If the installer says "permission denied", run `chmod +x install.sh` once.
 
-```
-nyfetch                   show your system
-nyfetch --small           use the small logo
-nyfetch -l arch           use another logo (or: random, none, or a text file)
-nyfetch --list-logos      list all logos
-nyfetch --gen-config      print the default config
-nyfetch -c file.lua       use another config file
-nyfetch --bench           show how long each line takes
-nyfetch --help            all options
-```
+</details>
 
-## Configure
+<sub>[↑ back to top](#nyfetch)</sub>
 
-Edit `~/.config/nyfetch/config.lua`. The top of the file has simple settings and the list of lines; the tutorial is at the bottom. For example:
+## 2.0 Usage
+
+| Command | Does |
+|---------|------|
+| `nyfetch` | show your system |
+| `nyfetch --small` | use the small logo |
+| `nyfetch -l arch` | use another logo (`random`, `none` or a text file work too) |
+| `nyfetch --list-logos` | list all logos |
+| `nyfetch --gen-config` | print the default config |
+| `nyfetch -c file.lua` | use another config file |
+| `nyfetch --bench` | time every line |
+
+<sub>[↑ back to top](#nyfetch)</sub>
+
+## 3.0 Configure
+
+Edit `~/.config/nyfetch/config.lua`. It has simple settings and a list of lines at the top, and **a step-by-step tutorial at the bottom**, written for people who have never coded.
 
 ```lua
 local logo = "arch"          -- pick a logo
@@ -85,21 +86,34 @@ local lines = {
   "title",
   "os",
   "kernel",
-  -- "uptime",                                -- hidden: -- in front of a line
+  -- "uptime",                                -- hidden: put -- in front
   { type = "memory", key = "RAM" },           -- renamed
   { type = "text", text = "Hello {user}!" },  -- your own text
   "colors",
 }
 ```
 
-Available lines: `title separator os host kernel uptime packages shell display de wm theme icons font cursor terminal terminalfont cpu gpu memory swap disk localip battery locale board bios processes break colors`, plus `text`, `custom` and `command` for your own.
+<details>
+<summary><b>All available lines</b></summary>
 
-Every line can be changed with `key`, `format` (words in `{braces}`, e.g. `"{used} of {total}"`), `keyColor`, `valueColor`, `hide` and `when`. Colors accept names (`red`, `bright_blue`), `#rrggbb`, `0`-`255` and styles (`bold`, `dim`, `italic`...). Lua helpers for advanced configs: `exec`, `env`, `read_file`, `file_exists`, `bar`, `bytes`, `gradient`, `ansi`, `nyfetch.query`.
+<br>
 
-## Not done yet
+`title` `separator` `os` `host` `kernel` `uptime` `packages` `shell` `display` `de` `wm` `theme` `icons` `font` `cursor` `terminal` `terminalfont` `cpu` `gpu` `memory` `swap` `disk` `localip` `battery` `locale` `board` `bios` `processes` `break` `colors`
 
-Compared with Fastfetch, still missing: media player, sound, Wi-Fi, Bluetooth, brightness, gamepad, physical disks, public IP, weather, OpenGL/Vulkan/OpenCL, CPU usage, image logos (kitty/sixel) and Fastfetch's JSON config format. NyFetch has been developed and tested mostly in a Linux VM, so some desktop-specific lines may differ from Fastfetch on your hardware. Bug reports are welcome.
+Your own: `text`, `custom` and `command`. Every line accepts `key`, `format`, `keyColor`, `valueColor`, `hide` and `when`. The config is real Lua, so lines can also be functions.
 
-## Credits and license
+</details>
 
-NyFetch is MIT licensed (see `LICENSE`). The logos and the layout idea come from [Fastfetch](https://github.com/fastfetch-cli/fastfetch) (MIT, see `LICENSE-FASTFETCH`). Distribution logos are trademarks of their respective owners.
+<sub>[↑ back to top](#nyfetch)</sub>
+
+## 4.0 Roadmap
+
+Still missing compared with Fastfetch: media player, sound, Wi-Fi, Bluetooth, brightness, gamepad, public IP, weather, GPU APIs, CPU usage, image logos and Fastfetch's JSON config. NyFetch was mostly developed and tested in a Linux VM, so some desktop-specific lines may differ on your hardware. Bug reports are welcome in [Issues](https://github.com/77nyan/nyfetch/issues).
+
+<sub>[↑ back to top](#nyfetch)</sub>
+
+## 5.0 Credits
+
+NyFetch is [MIT](LICENSE) licensed. The logos and the layout idea come from [Fastfetch](https://github.com/fastfetch-cli/fastfetch) (MIT, see [`LICENSE-FASTFETCH`](LICENSE-FASTFETCH)). Distribution logos are trademarks of their respective owners.
+
+<sub>[↑ back to top](#nyfetch)</sub>
